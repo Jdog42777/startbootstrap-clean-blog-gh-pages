@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>The 5-Second Challenge | Jonathan Lee</title>
+
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+
+  <!-- Font Awesome icons -->
+  <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+  <!-- Google fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css" />
+
+  <!-- Core theme CSS (includes Bootstrap) -->
+  <link href="css/styles.css" rel="stylesheet" />
+
+  <style>
+    /* Your game styles (kept the same look) */
+    #game-container {
+      text-align: center;
+      background: #3c4250;
+      padding: 40px 60px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      color: white;
+    }
+
+    #game-container h1 {
+      color: #61dafb;
+    }
+
+    #timer {
+      font-size: 4em;
+      margin: 20px 0;
+      min-width: 250px;
+    }
+
+    .instruction {
+      font-size: 1.2em;
+      margin-bottom: 25px;
+      color: #abb2bf;
+    }
+
+    #start-button {
+      padding: 12px 25px;
+      font-size: 1.5em;
+      cursor: pointer;
+      background-color: #98c379;
+      color: #282c34;
+      border: none;
+      border-radius: 6px;
+      transition: background-color 0.2s;
+    }
+
+    #start-button:hover:not(:disabled) {
+      background-color: #b0e090;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 1.5em;
+      color: #e5c07b;
+      min-height: 30px;
+    }
+
+    .error-good { color: #98c379; }
+    .error-bad  { color: #e06c75; }
+
+    /* Keep the page background consistent with your game */
+    body {
+      background-color: #282c34;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+    <div class="container px-4 px-lg-5">
+      <a class="navbar-brand" href="index.html">Jonathan Lee</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ms-auto py-4 py-lg-0">
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="about.html">Resume</a></li>
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="post.html">Game</a></li>
+          <li class="nav-item"><a class="nav-link px-lg-3 py-3 py-lg-4" href="contact.html">Contact Me</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <header class="masthead" style="background-image: url('img/Meme.JPG')">
+    <div class="container position-relative px-4 px-lg-5">
+      <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7 text-center">
+          <h1 class="text-white">The 5-Second Challenge</h1>
+          <span class="subheading text-white">Press start, then hit SPACE as close to 5.000s as possible</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Game Content -->
+  <main class="container px-4 px-lg-5 my-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 d-flex justify-content-center">
+
+        <div id="game-container">
+          <h1>The 5.000 Second Challenge</h1>
+          <p class="instruction">
+            Press the <strong>Start</strong> button, then press the <strong>SPACEBAR</strong> as close to <br>
+            <strong>5.000 seconds</strong> as you can.
+          </p>
+
+          <div id="timer">10.000</div>
+
+          <button id="start-button">START GAME</button>
+
+          <div id="result"></div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-top">
+    <div class="container px-4 px-lg-5">
+      <div class="row gx-4 gx-lg-5 justify-content-center">
+        <div class="col-md-10 col-lg-8 col-xl-7">
+          <div class="small text-center text-muted fst-italic">© Jonathan Lee 2025</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/scripts.js"></script>
+
+  <script>
+    // --- Game Constants ---
+    const TARGET_TIME = 5000; // 5.000 seconds
+    const START_TIME = 10000; // 10.000 seconds
+
+    // --- DOM Elements ---
+    const timerDisplay = document.getElementById('timer');
+    const startButton = document.getElementById('start-button');
+    const resultDisplay = document.getElementById('result');
+
+    // --- Game State Variables ---
+    let startTime;
+    let animationFrameId;
+    let isGameRunning = false;
+
+    function resetGame() {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+
+      isGameRunning = false;
+      startButton.textContent = 'START GAME';
+      startButton.disabled = false;
+      timerDisplay.textContent = formatTime(START_TIME);
+      resultDisplay.innerHTML = '';
+      document.removeEventListener('keydown', handleSpacebar);
+    }
+
+    function formatTime(ms) {
+      const totalSeconds = Math.max(0, ms / 1000);
+      const seconds = Math.floor(totalSeconds).toString().padStart(2, '0');
+      const milliseconds = Math.round((totalSeconds - seconds) * 1000).toString().padStart(3, '0');
+      return `${seconds}.${milliseconds}`;
+    }
+
+    function countdown(timestamp) {
+      if (!startTime) startTime = timestamp;
+
+      const elapsedTime = timestamp - startTime;
+      const remainingTime = START_TIME - elapsedTime;
+
+      timerDisplay.textContent = formatTime(remainingTime);
+
+      if (remainingTime <= 0) {
+        endGame(START_TIME);
+      } else {
+        animationFrameId = requestAnimationFrame(countdown);
+      }
+    }
+
+    function startGame() {
+      if (isGameRunning) return;
+
+      resetGame();
+      isGameRunning = true;
+      startButton.textContent = 'Counting Down...';
+      startButton.disabled = true;
+      resultDisplay.innerHTML = 'Press <strong>SPACEBAR</strong> now!';
+
+      startTime = null;
+      animationFrameId = requestAnimationFrame(countdown);
+      document.addEventListener('keydown', handleSpacebar);
+    }
+
+    function handleSpacebar(e) {
+      if (e.code === 'Space' && isGameRunning) {
+        e.preventDefault();
+        endGame(START_TIME - (performance.now() - startTime));
+      }
+    }
+
+    function endGame(finalRemainingTime) {
+      if (!isGameRunning) return;
+
+      cancelAnimationFrame(animationFrameId);
+      isGameRunning = false;
+      document.removeEventListener('keydown', handleSpacebar);
+
+      const timePassed = START_TIME - finalRemainingTime;
+      const error = Math.abs(timePassed - TARGET_TIME);
+
+      timerDisplay.textContent = formatTime(timePassed);
+
+      let resultMessage = `You stopped the timer at <strong>${formatTime(timePassed)}</strong> seconds.`;
+
+      if (error < 50) {
+        resultMessage += `<br><span class="error-good">INCREDIBLE! You were only ${formatTime(error)} seconds off!</span>`;
+      } else if (error < 250) {
+        resultMessage += `<br><span class="error-good">GOOD JOB! You were ${formatTime(error)} seconds off.</span>`;
+      } else {
+        resultMessage += `<br><span class="error-bad">Too slow or too fast! You were ${formatTime(error)} seconds off.</span>`;
+      }
+
+      resultDisplay.innerHTML = resultMessage;
+      startButton.textContent = 'PLAY AGAIN';
+      startButton.disabled = false;
+    }
+
+    startButton.addEventListener('click', startGame);
+    resetGame();
+  </script>
+
+</body>
+</html>

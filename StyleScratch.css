@@ -1,0 +1,27 @@
+body{ 
+    color: darkgreen;
+    font-family: Arial, sans-serif;
+    background-color: #e0e0e0;
+  text-align: center;
+}
+#intro-box {
+    background-color: lightgrey;
+    padding: 15px;
+    border-radius: 10px;
+}
+.thumbnail {
+  width: 250px;
+}
+.section {
+  background-color: lightgrey;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.list-wrap {
+  text-align: left;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+
